@@ -12,8 +12,8 @@ ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 env_path = ROOT_DIR / ".env"
 load_dotenv(dotenv_path=env_path)
 
-SUPABASE_URL = os.environ.get("SUPABASE_URL")
-SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
+SUPABASE_URL = os.environ.get("SUPABASE_URL") or st.secrets.get("SUPABASE_URL")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY") or st.secrets.get("SUPABASE_KEY")
 
 _client: Client = None
 
@@ -22,7 +22,7 @@ def get_supabase_client() -> Client:
     global _client
     if _client is None:
         if not SUPABASE_URL or not SUPABASE_KEY:
-            raise ValueError("SUPABASE_URL and SUPABASE_KEY must be set in .env")
+            raise ValueError("SUPABASE_URL and SUPABASE_KEY must be set in .env or Streamlit secrets")
         _client = create_client(SUPABASE_URL, SUPABASE_KEY)
     return _client
 
@@ -291,7 +291,6 @@ def trigger_pipeline(script_name: str) -> dict:
         }
         
     try:
-        # Run with current python executable
         result = subprocess.run(
             [sys.executable, str(target_path)],
             capture_output=True,
