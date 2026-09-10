@@ -1,0 +1,7 @@
+streamlit
+supabase
+python-dotenv
+folium
+streamlit-folium
+pandas
+plotly
